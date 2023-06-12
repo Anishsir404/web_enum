@@ -5,6 +5,9 @@ from selenium import webdriver
 import dns.resolver
 import socket
 import concurrent.futures
+import whois
+import ssl
+import re
 # Input URL
 # url = input("Enter the target URL: ")
 url = "https://hackertarget.com/"
@@ -142,6 +145,7 @@ def port_scan(url, start_port, end_port):
         print(f"DNS resolution failed for {url}. Error: {str(e)}")
     except Exception as e:
         print(f"An error occurred during port scanning: {str(e)}")
+
 
 # Step 1: Detect Technologies
 # detect_technologies(url)
