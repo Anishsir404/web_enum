@@ -7,4 +7,4 @@
 7. screenshot of all the page found | Done
 8. DNS enumeration | done
 9. Port scanner with service | done
-10. Information gathering (email, whoisrecord, SSL certificates)
+10. Information gathering (email, whoisrecord, SSL certificates) | done 

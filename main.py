@@ -10,7 +10,7 @@ import ssl
 import re
 # Input URL
 # url = input("Enter the target URL: ")
-url = "https://hackertarget.com/"
+url = "https://softwarica.edu.np/"
 
 # Technology Detection
 def detect_technologies(url):
@@ -146,7 +146,36 @@ def port_scan(url, start_port, end_port):
     except Exception as e:
         print(f"An error occurred during port scanning: {str(e)}")
 
+def get_email_addresses(url):
+    response = requests.get(url)
+    emails = re.findall(r'[\w.-]+@[\w.-]+', response.text)
+    if emails:
+        print("Email addresses found:")
+        for email in emails:
+            print(email)
+    else:
+        print("No email addresses found.")
 
+def get_whois_record(url):
+    domain = url.split("//")[-1].split("/")[0]
+    whois_info = whois.whois(domain)
+    print("WHOIS Record:")
+    print(whois_info)
+
+def get_ssl_certificate(url):
+    hostname = url.split("//")[-1].split("/")[0]
+    context = ssl.create_default_context()
+    with socket.create_connection((hostname, 443)) as sock:
+        with context.wrap_socket(sock, server_hostname=hostname) as sslsock:
+            cert = sslsock.getpeercert()
+    print("SSL Certificate:")
+    print(cert)
+
+def gather_information(url):
+    get_email_addresses(url)
+    get_whois_record(url)
+    get_ssl_certificate(url)
+    
 # Step 1: Detect Technologies
 # detect_technologies(url)
 # fuzz_directories(url)
@@ -154,4 +183,5 @@ def port_scan(url, start_port, end_port):
 # fuzz_files(url)
 # capture_screenshot(url)
 # dns_enum(url)
-port_scan(url, 1, 1000)
+# port_scan(url, 1, 1000)
+# gather_information(url)
