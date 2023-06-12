@@ -17,13 +17,14 @@ def detect_technologies(url):
         for t in tech:
             print(t)
             # Step 2: Search for Exploits
-            # search_exploits(t)
+            search_exploits(t)
 
 # Search for Exploits
 def search_exploits(technology):
     query = f"{technology} exploit"
     url = f"https://www.exploit-db.com/search?description={query}"
     response = requests.get(url)
+    print(response.text)
     # Process the response and extract relevant information
     # (e.g., exploit titles, URLs, descriptions, etc.)
     # Display the results
@@ -36,7 +37,7 @@ def fuzz_directories(url):
         response = requests.get(directory_url)
         if response.status_code != 404 and response.status_code != 403:
             print(f"[{response.status_code}] -- {directory_url}")
-
+            # capture_screenshot(directory_url)
 def fuzz_subdomains(url):
     parsed_url = urlparse(url)
     domain = parsed_url.netloc
@@ -65,14 +66,14 @@ def fuzz_files(url):
             print(f"[{response.status_code}]: {file_url}")
 
 def capture_screenshot(url):
+    chromedriver_path = "D:\3rd-sem\programming\project\chromedriver_win32\chromedriver.exe"
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # Run Chrome in headless mode (without GUI)
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
     # Specify the path to your chromedriver executable
-    # Make sure the version of chromedriver matches your Chrome browser version
-    driver = webdriver.Chrome("path/to/chromedriver", options=options)
+    driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     driver.get(url)
 
     # Save screenshot to a file
@@ -85,6 +86,7 @@ def capture_screenshot(url):
 
 # Step 1: Detect Technologies
 # detect_technologies(url)
-#fuzz_directories(url)
+# fuzz_directories(url)
 # fuzz_subdomains(url)
 # fuzz_files(url)
+capture_screenshot(url)
