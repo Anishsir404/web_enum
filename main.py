@@ -81,7 +81,7 @@ def capture_screenshot(url):
     driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     driver.get(url)
     # Specify the directory path to save the screenshots
-    screenshot_directory = "screenshot"
+    screenshot_directory = "screenshot_file"
     # Save screenshot to a file in the specified directory
     screenshot_file = f"{screenshot_directory}/screenshot_{url.replace('https://www.', '')}.png"
     driver.save_screenshot(screenshot_file)
