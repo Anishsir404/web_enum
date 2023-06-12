@@ -4,7 +4,7 @@
 4. fuzz for subdomain  | done
 5. fuzz for files      |
 6. search for publically available exploit in the technology used - done
-7. screenshot of all the page found
+7. screenshot of all the page found | Done
 8. DNS enumeration
 9. Port scanner 
 10. Information gathering (email, whoisrecord, SSL certificates)

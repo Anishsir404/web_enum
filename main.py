@@ -2,7 +2,7 @@ import requests
 import builtwith
 from urllib.parse import urlparse
 from selenium import webdriver
-
+import dns.resolver
 # Input URL
 # url = input("Enter the target URL: ")
 url = "https://www.google.com"
@@ -75,18 +75,35 @@ def capture_screenshot(url):
     # Specify the path to your chromedriver executable
     driver = webdriver.Chrome(executable_path=chromedriver_path, options=options)
     driver.get(url)
-
-    # Save screenshot to a file
-    screenshot_file = f"screenshot_{url.replace('https://', '')}.png"
+    # Specify the directory path to save the screenshots
+    screenshot_directory = "screenshot"
+    # Save screenshot to a file in the specified directory
+    screenshot_file = f"{screenshot_directory}/screenshot_{url.replace('https://www.', '')}.png"
     driver.save_screenshot(screenshot_file)
     print(f"Screenshot saved: {screenshot_file}")
 
+
     driver.quit()
-      
+
+def dns_enum(domain):
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc
+    if domain.startswith("www."):
+        domain = domain[4:]
+    try:
+        record_types = ['A', 'AAAA', 'MX', 'NS']
+        print(f"DNS Records for {domain}:")
+        for rtype in record_types:
+            answers = dns.resolver.resolve(domain, rtype)
+            for answer in answers:
+                print(f"{rtype}: {answer}")
+    except dns.resolver.NXDOMAIN:
+        print(f"DNS enumeration failed for {domain}.")
 
 # Step 1: Detect Technologies
 # detect_technologies(url)
 # fuzz_directories(url)
 # fuzz_subdomains(url)
 # fuzz_files(url)
-capture_screenshot(url)
+# capture_screenshot(url)
+dns_enum(url)
