@@ -3,9 +3,11 @@ import builtwith
 from urllib.parse import urlparse
 from selenium import webdriver
 import dns.resolver
+import socket
+import concurrent.futures
 # Input URL
 # url = input("Enter the target URL: ")
-url = "https://www.google.com"
+url = "https://hackertarget.com/"
 
 # Technology Detection
 def detect_technologies(url):
@@ -100,10 +102,52 @@ def dns_enum(domain):
     except dns.resolver.NXDOMAIN:
         print(f"DNS enumeration failed for {domain}.")
 
+def port_scan(url, start_port, end_port):
+    try:
+        target = socket.gethostbyname(url.split("//")[-1].split("/")[0])
+        print(f"Scanning ports {start_port} to {end_port} on [{target}]...")
+        open_ports = []
+        
+        def scan_port(port):
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            try:
+                result = sock.connect_ex((target, port))
+                if result == 0:
+                    service = socket.getservbyport(port)
+                    sock.close()
+                    return port, "open", service
+                sock.close()
+                return port, "closed", None
+            except socket.error as e:
+                return port, str(e), None
+        
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(scan_port, port) for port in range(start_port, end_port + 1)]
+            for future in concurrent.futures.as_completed(futures):
+                port, status, service = future.result()
+                if status == "open":
+                    open_ports.append((port, service))
+                elif status != "closed":
+                    print(f"Error occurred while scanning port {port}: {status}")
+        
+        if open_ports:
+            print("Open ports:")
+            for port, service in open_ports:
+                print(f"Port {port} is open. Service: {service}")
+        else:
+            print("No open ports found.")
+    
+    except socket.gaierror as e:
+        print(f"DNS resolution failed for {url}. Error: {str(e)}")
+    except Exception as e:
+        print(f"An error occurred during port scanning: {str(e)}")
+
 # Step 1: Detect Technologies
 # detect_technologies(url)
 # fuzz_directories(url)
 # fuzz_subdomains(url)
 # fuzz_files(url)
 # capture_screenshot(url)
-dns_enum(url)
+# dns_enum(url)
+port_scan(url, 1, 1000)
