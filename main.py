@@ -239,7 +239,7 @@ def process_file(file_url, output_file, domain):
             file.write(error_line)
 
 def capture_screenshot(url, domain):
-    chromedriver_path = r"D:\3rd-sem\programming\project\chromedriver_win32\chromedriver.exe"
+    chromedriver_path = r"chromedriver.exe"
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
@@ -250,7 +250,7 @@ def capture_screenshot(url, domain):
     driver.get(url)
 
     # Specify the parent directory path to save the screenshots
-    screenshot_directory = r"D:\3rd-sem\programming\project\Web_enum\screenshot_file"
+    screenshot_directory = r"screenshot_file"
 
     # Create the parent directory if it doesn't exist
     os.makedirs(screenshot_directory, exist_ok=True)
@@ -388,6 +388,21 @@ def port_scan(url, start_port, end_port):
     except Exception as e:
         print(f"An error occurred during port scanning: {str(e)}")
 
+def is_valid_email(email):
+    # Regular expression pattern to validate email addresses
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email)
+def remove_invalid_emails(file_path):
+    valid_emails = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            email = line.strip()
+            if is_valid_email(email):
+                valid_emails.append(email)
+    with open(file_path, 'w') as file:
+        for email in valid_emails:
+            file.write(email + '\n')
+
 
 def get_email_addresses(url, domain):
     try:
@@ -419,6 +434,7 @@ def get_email_addresses(url, domain):
                 file.write(output)
 
             print(f"Email addresses found:\n{output}")
+            remove_invalid_emails(output_file)
             print(f"Results saved in {output_file} file.")
         else:
             print("No email addresses found.")
@@ -626,4 +642,5 @@ def main():
     generate_pdf_report(url)
 if __name__ == "__main__":
     main()
+    
 
